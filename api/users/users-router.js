@@ -27,3 +27,18 @@
 
 // Diğer modüllerde kullanılabilmesi için routerı "exports" nesnesine eklemeyi unutmayın.
 
+const express = require("express");
+const router = express.Router();
+
+const UsersModel = require("./users-model.js");
+const { sinirli } = require("../auth/auth-middleware.js")
+
+router.get("/", sinirli, async (req, res, next) => {
+  try {
+    return await UsersModel.bul().then((users) => res.status(200).json(users));
+  } catch (error) {
+    next(error);
+  }
+})
+
+module.exports = router;

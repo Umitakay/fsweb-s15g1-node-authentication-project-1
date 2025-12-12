@@ -25,6 +25,25 @@ server.get("/", (req, res) => {
   res.json({ api: "up" });
 });
 
+const session = require('express-session');
+server.use(session({
+  name: 'cikolatacips',
+  secret: '12345',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {
+    httpOnly: false,
+    maxAge: 24 * 60 * 60 * 1000
+  }
+}))
+
+const usersRouter = require("./users/users-router.js");
+const authRouter = require("./auth/auth-router.js");
+
+server.use("/api/auth", authRouter);
+server.use("/api/users", usersRouter);
+
+
 server.use((err, req, res, next) => { // eslint-disable-line
   res.status(err.status || 500).json({
     message: err.message,
